@@ -1,50 +1,50 @@
 #include <cstdlib>
 #include <GL/glut.h>
-#define _USE_MATH_DEFINES	// Visual Studio ‚Å ‰~ü—¦‚Æ‚µ‚Ä’è” M_PI ‚ğg—p‚·‚é‚½‚ß
+#define _USE_MATH_DEFINES	// Visual Studio ã§ å††å‘¨ç‡ã¨ã—ã¦å®šæ•° M_PI ã‚’ä½¿ç”¨ã™ã‚‹ãŸã‚
 #include <cmath>
 
 #define M_PI 3.14159265
 
-// F‚Ìî•ñ‚ğŠi”[‚·‚é‹¤—p‘Ì
+// è‰²ã®æƒ…å ±ã‚’æ ¼ç´ã™ã‚‹å…±ç”¨ä½“
 union color {
 	struct { float r, g, b, a; };
 	float colors[4];
 };
 
-// ŒÂX‚ÌƒeƒB[ƒ|ƒbƒg‚ÌF‚âAŒX‚«Šp“x‚ÉŠÖ‚·‚éî•ñ‚ğ•Û‚·‚é‚½‚ß‚Ì\‘¢‘Ì
+// å€‹ã€…ã®ãƒ†ã‚£ãƒ¼ãƒãƒƒãƒˆã®è‰²ã‚„ã€å‚¾ãè§’åº¦ã«é–¢ã™ã‚‹æƒ…å ±ã‚’ä¿æŒã™ã‚‹ãŸã‚ã®æ§‹é€ ä½“
 struct TeapotData {
 	color ambient, diffuse, specular;
 	float shininess, angle;
 };
 
-// ƒOƒ[ƒoƒ‹•Ï”iƒvƒƒOƒ‰ƒ€’†‚Ì‚Ç‚±‚©‚ç‚Å‚àƒAƒNƒZƒX‚Å‚«‚é•Ï”j‚É‚Í g_ ‚ğ•t‚¯‚Ä‚¢‚é
-const int g_NumTeapots = 8;  //ƒeƒB[ƒ|ƒbƒg‚Ì”
+// ã‚°ãƒ­ãƒ¼ãƒãƒ«å¤‰æ•°ï¼ˆãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¸­ã®ã©ã“ã‹ã‚‰ã§ã‚‚ã‚¢ã‚¯ã‚»ã‚¹ã§ãã‚‹å¤‰æ•°ï¼‰ã«ã¯ g_ ã‚’ä»˜ã‘ã¦ã„ã‚‹
+const int g_NumTeapots = 8;  //ãƒ†ã‚£ãƒ¼ãƒãƒƒãƒˆã®æ•°
 TeapotData g_Teapots[g_NumTeapots];
 
-// floatŒ^‚Ì’l‚ÍA”š‚ÌŒã‚ë‚Éf‚ğ•t‚¯‚éB––”ö‚Ìƒ[ƒ‚ÍÈ—ª‚Å‚«‚é
+// floatå‹ã®å€¤ã¯ã€æ•°å­—ã®å¾Œã‚ã«fã‚’ä»˜ã‘ã‚‹ã€‚æœ«å°¾ã®ã‚¼ãƒ­ã¯çœç•¥ã§ãã‚‹
 const float g_TeapotSize = 1.f;
 const float g_InnerRadius = 6.f;
 const float g_OuterRadius = 7.5f;
 const float g_HeightAmplitude = 0.8f;
-const float g_HeightOffset = -0.3f;  //ƒeƒB[ƒ|ƒbƒg‚Ì‚‚³
+const float g_HeightOffset = -0.3f;  //ãƒ†ã‚£ãƒ¼ãƒãƒƒãƒˆã®é«˜ã•
 
-const float g_EyeCenterY = 10.f;  //‘å‚«‚¯‚ê‚Î‹“_‚ª‚‚­‚È‚é
-const float g_EyeCenterZ = 30.f;  //‘å‚«‚¯‚ê‚Î‹“_‚ª‰“‚­‚È‚é
+const float g_EyeCenterY = 10.f;  //å¤§ãã‘ã‚Œã°è¦–ç‚¹ãŒé«˜ããªã‚‹
+const float g_EyeCenterZ = 30.f;  //å¤§ãã‘ã‚Œã°è¦–ç‚¹ãŒé ããªã‚‹
 const float g_EyeRadius = 8.f;
 float g_EyeY, g_EyeZ;
 
 const int g_AnimationIntervalMsec = 10;
 
-float g_RotationDegree = 0.f;  //“®‚¢‚½Šp“x‚ğ•Û‘¶ 0.0 0.3 0.6 0.9 1.2...
-const float g_DeltaRotationDegree = 0.3;  //’Ç‰Á‚µ‚Ä‚¢‚­’l
+float g_RotationDegree = 0.f;  //å‹•ã„ãŸè§’åº¦ã‚’ä¿å­˜ 0.0 0.3 0.6 0.9 1.2...
+const float g_DeltaRotationDegree = 0.3;  //è¿½åŠ ã—ã¦ã„ãå€¤
 
 int g_WindowWidth = 512;
 int g_WindowHeight = 512;
 
-// ‰~“›‚ğ•`‰æcˆø”‚Í‰~‚Ì”¼ŒaA‚‚³A‰~‚Ì•ªŠ„”
-// glut‚É‚Í‰~“›‚ğ•`‰æ‚·‚é‚½‚ß‚ÌŠÖ”‚ª–³‚¢‚Ì‚ÅA“Æ©‚É€”õ
+// å††ç­’ã‚’æç”»â€¦å¼•æ•°ã¯å††ã®åŠå¾„ã€é«˜ã•ã€å††ã®åˆ†å‰²æ•°
+// glutã«ã¯å††ç­’ã‚’æç”»ã™ã‚‹ãŸã‚ã®é–¢æ•°ãŒç„¡ã„ã®ã§ã€ç‹¬è‡ªã«æº–å‚™
 void displayCylinder(float radius, float height, int nSlices) {
-	// “V’¸–Ê
+	// å¤©é ‚é¢
 	const float deltaTheta = 2 * M_PI / (float)nSlices;
 
 	glNormal3f(0, 1, 0);
@@ -56,7 +56,7 @@ void displayCylinder(float radius, float height, int nSlices) {
 	}
 	glEnd();
 
-	// ’ê–Ê
+	// åº•é¢
 	glNormal3f(0, -1, 0);
 	glBegin(GL_TRIANGLE_FAN);
 	glVertex3f(0, 0, 0);
@@ -66,7 +66,7 @@ void displayCylinder(float radius, float height, int nSlices) {
 	}
 	glEnd();
 
-	// ‘¤–Ê
+	// å´é¢
 	glBegin(GL_TRIANGLE_STRIP);
 	for (int i = 0; i <= nSlices; i++) {
 		const float theta = deltaTheta * i;
@@ -82,12 +82,12 @@ void displayCylinder(float radius, float height, int nSlices) {
 void display() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// “§‹“Š‰e•ÏŠ·‚Ìİ’è
+	// é€è¦–æŠ•å½±å¤‰æ›ã®è¨­å®š
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluPerspective(30.0, g_WindowWidth / (double)g_WindowHeight, 1, 100.0);
 
-	// ƒ‚ƒfƒ‹À•W‚Ì‘€ì‚Öƒ‚[ƒhØ‚è‘Ö‚¦
+	// ãƒ¢ãƒ‡ãƒ«åº§æ¨™ã®æ“ä½œã¸ãƒ¢ãƒ¼ãƒ‰åˆ‡ã‚Šæ›¿ãˆ
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	gluLookAt(0.0, g_EyeY, g_EyeZ, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
@@ -104,29 +104,29 @@ void display() {
 
 
 
-	// ‰®ª
+	// å±‹æ ¹
 	glPushMatrix();
 	glTranslatef(0, g_HeightAmplitude + g_HeightOffset + 3.f, 0);
 	glRotatef(-90, 1, 0, 0);
 	glutSolidCone(g_OuterRadius, 2.f, 32, 32);
 	glPopMatrix();
 
-	// ’†S‚Ì’Œ
+	// ä¸­å¿ƒã®æŸ±
 	glPushMatrix();
 	glTranslatef(0, -1.f, 0);
 	displayCylinder(0.5f, g_HeightAmplitude + g_HeightOffset + 6.5f, 32);
 	glPopMatrix();
 
-	// “y‘ä
+	// åœŸå°
 	glPushMatrix();
 	glTranslatef(0, -2.f, 0);
 	displayCylinder(g_OuterRadius, 0.7f, 64);
 	glPopMatrix();
 
-	// ‰®ª‚Ìã‚ÌƒeƒB[ƒ|ƒbƒg
+	// å±‹æ ¹ã®ä¸Šã®ãƒ†ã‚£ãƒ¼ãƒãƒƒãƒˆ
 	glPushMatrix();
 	glTranslatef(0, g_HeightAmplitude + g_HeightOffset + 5.5f, 0);
-	glRotatef(g_RotationDegree, 0, 1, 0); // ‰ñ“]‚³‚¹‚Ä‚¢‚é
+	glRotatef(g_RotationDegree, 0, 1, 0); // å›è»¢ã•ã›ã¦ã„ã‚‹
 	glutSolidTeapot(g_TeapotSize);
 	glPopMatrix();
 
@@ -134,28 +134,28 @@ void display() {
 
 	const float deltaTheta = 360 / (float)g_NumTeapots;
 
-	// ƒeƒB[ƒ|ƒbƒg‚Æ’Œ‚ğ1‚Â‚¸‚Â•`‰æ‚·‚é
-	// š‰º‹L‚ÌƒR[ƒh‚Å‚ÍAí‚É“¯‚¶ˆÊ’u‚É•`‰æ‚³‚ê‚é‚Ì‚ÅA‘S‘Ì‚ª‰ñ“]‚·‚é‚æ‚¤‚É•ÏX‚·‚é
+	// ãƒ†ã‚£ãƒ¼ãƒãƒƒãƒˆã¨æŸ±ã‚’1ã¤ãšã¤æç”»ã™ã‚‹
+	// â˜…ä¸‹è¨˜ã®ã‚³ãƒ¼ãƒ‰ã§ã¯ã€å¸¸ã«åŒã˜ä½ç½®ã«æç”»ã•ã‚Œã‚‹ã®ã§ã€å…¨ä½“ãŒå›è»¢ã™ã‚‹ã‚ˆã†ã«å¤‰æ›´ã™ã‚‹
 	for (int i = 0; i < g_NumTeapots; i++) {
-		const float thetaDegree = deltaTheta * i; // ƒeƒB[ƒ|ƒbƒg‚ÌˆÊ’u‚ğŒˆ‚ß‚é‚½‚ß‚ÌŠp“x
+		const float thetaDegree = deltaTheta * i; // ãƒ†ã‚£ãƒ¼ãƒãƒƒãƒˆã®ä½ç½®ã‚’æ±ºã‚ã‚‹ãŸã‚ã®è§’åº¦
 
 		const float thetaRad = thetaDegree * M_PI / 180.f;
 		const float xPos = g_InnerRadius * sinf(thetaRad);
 		const float zPos = g_InnerRadius * cosf(thetaRad);
 
-		// ƒeƒB[ƒ|ƒbƒg‚Ì‚‚³•ûŒü‚Ì’l
+		// ãƒ†ã‚£ãƒ¼ãƒãƒƒãƒˆã®é«˜ã•æ–¹å‘ã®å€¤
 		const float yPos = g_HeightOffset;
 
-																			   // ƒeƒB[ƒ|ƒbƒg‚ÌF‚Ìw’è
+																			   // ãƒ†ã‚£ãƒ¼ãƒãƒƒãƒˆã®è‰²ã®æŒ‡å®š
 		glMaterialfv(GL_FRONT, GL_AMBIENT, g_Teapots[i].ambient.colors);
 		glMaterialfv(GL_FRONT, GL_DIFFUSE, g_Teapots[i].diffuse.colors);
 		glMaterialfv(GL_FRONT, GL_SPECULAR, g_Teapots[i].specular.colors);
 		glMaterialfv(GL_FRONT, GL_SHININESS, &g_Teapots[i].shininess);
 
-		// ƒeƒB[ƒ|ƒbƒg‚Ì•`‰æ
+		// ãƒ†ã‚£ãƒ¼ãƒãƒƒãƒˆã®æç”»
 		glPushMatrix();
 		glTranslatef(xPos, yPos, zPos);
-		glRotatef(g_RotationDegree * 5, 0, 1, 0);  //ƒeƒB[ƒ|ƒbƒg1‚Â‚¸‚Â‚Ì©“]
+		glRotatef(g_RotationDegree * 5, 0, 1, 0);  //ãƒ†ã‚£ãƒ¼ãƒãƒƒãƒˆ1ã¤ãšã¤ã®è‡ªè»¢
 		glRotatef(thetaDegree, 0, 1, 0);
 		glScaled(1.3, 1.3, 1.3);
 		glutSolidTeapot(1.2f * g_TeapotSize);
@@ -169,7 +169,7 @@ void display() {
 
 float frand() { return rand() / (float)RAND_MAX; }
 
-// ‰Šúİ’è‚ğs‚¤ŠÖ”
+// åˆæœŸè¨­å®šã‚’è¡Œã†é–¢æ•°
 void init() {
 	glClearColor(1, 1, 1, 1);
 	glClearDepth(100.f);
@@ -200,7 +200,7 @@ void init() {
 
 	srand(0);
 
-	// ŒÂX‚ÌƒeƒB[ƒ|ƒbƒg‚ÌF‚ğİ’è‚·‚éˆ— —”‚ÅŒˆ‚ß‚Ä‚¢‚é
+	// å€‹ã€…ã®ãƒ†ã‚£ãƒ¼ãƒãƒƒãƒˆã®è‰²ã‚’è¨­å®šã™ã‚‹å‡¦ç† ä¹±æ•°ã§æ±ºã‚ã¦ã„ã‚‹
 	for (int i = 0; i < g_NumTeapots; i++) {
 		g_Teapots[i].ambient.r = 0.2f * frand();
 		g_Teapots[i].ambient.g = 0.2f * frand();
@@ -225,28 +225,28 @@ void init() {
 	glEnable(GL_DEPTH_TEST);
 }
 
-// ˆê’èŠÔ‚²‚Æ‚ÉÀs‚³‚ê‚éŠÖ”
+// ä¸€å®šæ™‚é–“ã”ã¨ã«å®Ÿè¡Œã•ã‚Œã‚‹é–¢æ•°
 void timer(int val) {
-	// ‰ñ“]Šp“x‚ÌXV
+	// å›è»¢è§’åº¦ã®æ›´æ–°
 	g_RotationDegree += g_DeltaRotationDegree;
 
 	const float rotationRad = 2.f * g_RotationDegree * M_PI / 180.f;
 
-	// š ‰º‚ÌƒR[ƒh‚Å‚Í‹“_‚ªŒÅ’è‚¾‚¯‚Ç
-	// ‚±‚±‚Å  g_EyeY ‚Æ g_EyeZ ‚Ì’l‚ğ•Ï‚¦‚é‚±‚Æ‚Å‹“_ˆÊ’u‚ğ•Ï‰»‚³‚¹‚é‚±‚Æ‚ª‚Å‚«‚é
-	g_EyeY = (sin(g_RotationDegree / 10) + 1) * 10 - 5;  //ƒJƒƒ‰‚ÌyÀ•W‚Í-5.f-15.f
-	g_EyeZ = (cos(g_RotationDegree / 10) + 1) * 10 + 30;  //ƒJƒƒ‰‚ÌzÀ•W‚Í30.f-50.f
+	// â˜… ä¸‹ã®ã‚³ãƒ¼ãƒ‰ã§ã¯è¦–ç‚¹ãŒå›ºå®šã ã‘ã©
+	// ã“ã“ã§  g_EyeY ã¨ g_EyeZ ã®å€¤ã‚’å¤‰ãˆã‚‹ã“ã¨ã§è¦–ç‚¹ä½ç½®ã‚’å¤‰åŒ–ã•ã›ã‚‹ã“ã¨ãŒã§ãã‚‹
+	g_EyeY = (sin(g_RotationDegree / 10) + 1) * 10 - 5;  //ã‚«ãƒ¡ãƒ©ã®yåº§æ¨™ã¯-5.f-15.f
+	g_EyeZ = (cos(g_RotationDegree / 10) + 1) * 10 + 30;  //ã‚«ãƒ¡ãƒ©ã®zåº§æ¨™ã¯30.f-50.f
 
 	glutPostRedisplay();
 
 	glutTimerFunc(g_AnimationIntervalMsec, timer, val);
 }
 
-// ƒEƒBƒ“ƒhƒEƒTƒCƒY‚ª•ÏX‚³‚ê‚½‚Æ‚«‚Ìˆ—
+// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚µã‚¤ã‚ºãŒå¤‰æ›´ã•ã‚ŒãŸã¨ãã®å‡¦ç†
 void reshape(int w, int h) {
 	if (h < 1) return;
 
-	// ƒrƒ…[ƒ|[ƒg‚ğƒEƒBƒ“ƒhƒEƒTƒCƒY‚É•ÏX
+	// ãƒ“ãƒ¥ãƒ¼ãƒãƒ¼ãƒˆã‚’ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚µã‚¤ã‚ºã«å¤‰æ›´
 	glViewport(0, 0, w, h);
 	g_WindowWidth = w;
 	g_WindowHeight = h;
@@ -257,14 +257,14 @@ int main(int argc, char **argv) {
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 	glutInitWindowSize(g_WindowWidth, g_WindowHeight);
 
-	// ƒEƒBƒ“ƒhƒEƒ^ƒCƒgƒ‹‚É•\¦‚·‚é•¶š—ñ‚ğw’è‚·‚éê‡
+	// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚¿ã‚¤ãƒˆãƒ«ã«è¡¨ç¤ºã™ã‚‹æ–‡å­—åˆ—ã‚’æŒ‡å®šã™ã‚‹å ´åˆ
 	glutCreateWindow("Teapot Merry-Go-Round");
 
 	glutDisplayFunc(display);
-	glutReshapeFunc(reshape); // ƒEƒBƒ“ƒhƒEƒTƒCƒY‚ª•ÏX‚³‚ê‚½‚Æ‚«‚ÉÀs‚³‚ê‚éŠÖ”‚ğw’è
+	glutReshapeFunc(reshape); // ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚µã‚¤ã‚ºãŒå¤‰æ›´ã•ã‚ŒãŸã¨ãã«å®Ÿè¡Œã•ã‚Œã‚‹é–¢æ•°ã‚’æŒ‡å®š
 	glutTimerFunc(g_AnimationIntervalMsec, timer, 0);
 
-	// ‰Šúİ’è‚ğs‚¤
+	// åˆæœŸè¨­å®šã‚’è¡Œã†
 	init();
 
 	glutMainLoop();

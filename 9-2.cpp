@@ -184,6 +184,14 @@ void getPixelColor(double x, double y, Vector3d &colorVec) {
 		double g = std::min(I * sphere.cG, 1.0); // 1.0 を超えないようにする
 		double b = std::min(I * sphere.cB, 1.0); // 1.0 を超えないようにする
 
+		double t = board.getIntersec(t_sphere*ray, housen);  //円からの法線が床と交わるか
+		if (t > 0) {
+			Vector3d board_color = board.getColorVec(t_sphere*ray.x + t * housen.x, t_sphere*ray.z + t * housen.z); //交わった床の色
+			r = std::min((I *sphere.cR + board_color.x) / 2, 1.0); // 1.0 を超えないようにする
+			g = std::min((I *sphere.cG + board_color.y) / 2, 1.0); // 1.0 を超えないようにする
+			b = std::min((I *sphere.cB + board_color.z) / 2, 1.0); // 1.0 を超えないようにする
+																   // 描画色の設定
+		}
 		colorVec.set(r, g, b);
 		return;
 	}

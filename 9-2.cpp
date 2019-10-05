@@ -114,8 +114,6 @@ public:
 	// 交点が p+tv として表せる場合の t の値を返す。交わらない場合は負の値を返す
 	double getIntersec(Vector3d &p, Vector3d &v) {
 		if (fabs(v.y) < 1.0e-10) return -1; // 水平なRayは交わらない
-											// ★ここで t の値を計算する
-											// ★ただしz座標が-3000より小さいなら交わらないものとする
 
 		double t = -(150 + p.y) / v.y;
 		if (-3000 <= p.z + t * v.z) return t;
@@ -127,7 +125,6 @@ public:
 		if (x < 0) x -= 100;
 		int xx = int(x) / 100 % 2;
 		int zz = int(z) / 100 % 2;
-		// ★ x, z の値によって(1.0, 1.0, 0.7)または(0.6, 0.6, 0.6)のどちらかの色を返すようにする
 		return xx&&zz || !xx && !zz ? Vector3d(0.6, 0.6, 0.6) : Vector3d(1.0, 1.0, 0.7);
 	}
 };
@@ -165,11 +162,9 @@ void getPixelColor(double x, double y, Vector3d &colorVec) {
 	double t_sphere = sphere.getIntersec(viewPosition, ray);
 
 	if (t_sphere > 0) { // 球との交点がある
-						// ★前回の課題を参考に、球体の表面の色を計算で求め、colorVecに設定する
 		double Is = 0;
 		double Id = 0;
 
-		// ★ここで Is および Id の値を計算する
 		Vector3d housen = viewPosition + t_sphere*ray - sphere.center;
 		housen.normalize();
 		double cosa = housen*-lightDirection / (housen.length()*lightDirection.length());  //入射光と法線ベクトルの内積
@@ -200,9 +195,7 @@ void getPixelColor(double x, double y, Vector3d &colorVec) {
 	double t_board = board.getIntersec(viewPosition, ray);
 
 	if (t_board > 0) { // 床との交点がある
-					   // ★床の表面の色を設定する
-					   // ★球の影になる場合は、RGBの値をそれぞれ0.5倍する
-					   // ★前回の課題を参考に、球体の表面の色を計算で求め、colorVecに設定する
+
 		double Is = 0;
 		double Id = 0;
 

@@ -142,7 +142,6 @@ void display(void) {
 				double Is = 0; // 鏡面反射光
 				double Id = 0; // 拡散反射光
 
-							   // ★ここで Is および Id の値を計算する
 				Vector3d housen = viewPosition+t*ray-sphere.center;
 				housen.normalize();
 				double cosa = housen*-lightDirection / (housen.length()*lightDirection.length());  //入射光と法線ベクトルの内積

@@ -121,9 +121,6 @@ int main(int argc, char**argv) {
 		printf("vec[%d]=(%lf, %lf)\n", i, vec[i].x, vec[i].y);
 	}
 
-
-	// ★課題：以下にコメント文で指示する内容のプログラムコードを追加すること
-
 	// (1) vec を空にする
 	vec.clear();
 

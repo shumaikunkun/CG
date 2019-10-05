@@ -135,7 +135,6 @@ void display() {
 	const float deltaTheta = 360 / (float)g_NumTeapots;
 
 	// ティーポットと柱を1つずつ描画する
-	// ★下記のコードでは、常に同じ位置に描画されるので、全体が回転するように変更する
 	for (int i = 0; i < g_NumTeapots; i++) {
 		const float thetaDegree = deltaTheta * i; // ティーポットの位置を決めるための角度
 
@@ -144,7 +143,7 @@ void display() {
 		const float zPos = g_InnerRadius * cosf(thetaRad);
 
 		// ティーポットの高さ方向の値
-		const float yPos = sin(2*M_PI*(i+ g_RotationDegree/3)/4)+1.2; // ★この値を少しずつ変化させることでティーポットが上下に移動する
+		const float yPos = sin(2*M_PI*(i+ g_RotationDegree/3)/4)+1.2;
 
 										   // ティーポットの色の指定
 		glMaterialfv(GL_FRONT, GL_AMBIENT, g_Teapots[i].ambient.colors);
@@ -241,8 +240,6 @@ void timer(int val) {
 
 	const float rotationRad = 2.f * g_RotationDegree * M_PI / 180.f;
 
-	// ★ 下のコードでは視点が固定だけど
-	// ここで  g_EyeY と g_EyeZ の値を変えることで視点位置を変化させることができる
 	g_EyeY = (sin(g_RotationDegree / 10) + 1) * 10 - 5;  //カメラのy座標は-5.f-15.f
 	g_EyeZ = (cos(g_RotationDegree / 10) + 1) * 10 + 30;  //カメラのz座標は30.f-50.f
 

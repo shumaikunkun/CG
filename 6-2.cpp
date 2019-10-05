@@ -86,8 +86,6 @@ double getBaseN(int i, int n, double t) {
 		return 0;
 	}
 	else {
-		// ★ここに必要なプログラムコードを記述する
-		// ★係数を計算するときに、ノットが重なる（分母がゼロとなる）ときには、その項を無視する。
 		double m = 0;
 		if (g_NotVector[i + n] != g_NotVector[i]) {
 			m += (t - g_NotVector[i]) / (g_NotVector[i + n] - g_NotVector[i])*getBaseN(i, n - 1, t);
@@ -121,10 +119,6 @@ void display(void) {
 		glVertex2d(g_ControlPoints[i].x, g_ControlPoints[i].y);
 	}
 	glEnd();
-
-	// ★ ここにBスプライン曲線を描画するプログラムコードを入れる
-	// ヒント1: 3次Bスプラインの場合は制御点を4つ入れるまでは何も描けない
-	// ヒント2: パラメータtの値の取り得る範囲に注意
 
 	l = g_ControlPoints.size() - g_n;  //(セグメント数)=(制御点数)-(次数) の初期値(制御点をうつたびに1減る)
 	NUM_NOT = leng();  // ノットベクトルの要素数を求める

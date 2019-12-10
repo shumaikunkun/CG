@@ -4,8 +4,14 @@
 + 初めてのC言語
 
 ## 実行例
-
+[](
 ![8-1](https://user-images.githubusercontent.com/49863890/70549669-edc07680-1bb7-11ea-99d8-5e45f267135f.png)
+)
+![8-2](https://user-images.githubusercontent.com/49863890/70549973-67586480-1bb8-11ea-97e3-4783eed72869.png)
+[](
+![9-1](https://user-images.githubusercontent.com/49863890/70550007-76d7ad80-1bb8-11ea-8fcd-53d7191bf734.png)
+)
+![9-2](https://user-images.githubusercontent.com/49863890/70550061-8bb44100-1bb8-11ea-90d6-2d0cbb89b748.png)
 
 ## 目次 
 | ファイル名 | 内容 |
